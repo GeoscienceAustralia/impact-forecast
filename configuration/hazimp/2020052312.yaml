@@ -1,0 +1,28 @@
+#  python ../../hazimp/main.py -c wind_v5.yaml
+ - template: wind_nc
+ - load_exposure: 
+     file_name:  /g/data/w85/BNHCRC/exposure/WA_Residential_Wind_Exposure_2018_TCRM.CSV
+     exposure_latitude: LATITUDE
+     exposure_longitude: LONGITUDE 
+ - load_wind:
+     file_list: /g/data/w85/BNHCRC/hazard/perth_may_2020/op_PSWG_20200523_12.nc
+     file_format: nc
+     variable: wndgust10m
+
+ - aggregation:
+    groupby: SA1_CODE
+    kwargs: 
+      structural_loss_ratio: [mean, max, std]
+      structural_loss: [mean, sum]
+      REPLACEMENT_VALUE: [mean, sum]
+ - calc_struct_loss:
+    replacement_value_label: REPLACEMENT_VALUE
+ - save: /g/data/w85/BNHCRC/impact/2020052312/2020052312_PSWG.csv
+ - aggregate:
+    boundaries: /g/data/w85/BNHCRC/exposure/SA1_2016_AUST.shp
+    file_name: /g/data/w85/BNHCRC/impact/2020052312/2020052312.json
+    impactcode: SA1_CODE
+    boundarycode: SA1_MAIN16
+ - save_agg: /g/data/w85/BNHCRC/impact/2020052312/2020052312_PSWG_agg.csv
+ - vulnerability_filename: /g/data/w85/BNHCRC/vulnerability/swha_domestic_wind_vul_curves.xml
+ - vulnerability_set: domestic_wind_2018_swha
